@@ -1,13 +1,22 @@
 import requests
 from bs4 import BeautifulSoup
 
-def mangaList_spider():
-    url = 'http://m.crunchyroll.com/anime/?tab=all'
-    source_code = requests.get(url)
+def soupCrawler(soupLink):
+    global source_code, plain_text, soup
+    source_code = requests.get(soupLink)
     plain_text = source_code.text
     soup = BeautifulSoup(plain_text, "lxml")
-    for link in soup.findAll('span', {'class': 'series'}):
-        title = link.string.encode('utf-8')
-        print(title)
+
+def mangaList_spider():
+
+    soupCrawler('http://www.crunchyroll.com/videos/anime/alpha?group=all')
+    for mangaListInfo in soup.findAll(token="shows-portraits"):
+        title = mangaListInfo.string.encode('utf-8')
+        link = 'http://www.crunchyroll.com' + mangaListInfo.get('href')
+
+        print title
+        print link
+
+
 
 mangaList_spider()
